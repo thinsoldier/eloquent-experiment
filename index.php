@@ -1,6 +1,10 @@
 <?php
 namespace GrapeSoda;
 
+error_reporting( E_ALL );
+
+ini_set('xdebug.var_display_max_children', 512);
+
 require 'vendor/autoload.php';
 
 // Illuminate Database Usage Instructions
@@ -93,6 +97,11 @@ class District extends Eloquent
 	}
 
 	public function location(){ return $this->parent(); }	
+	
+	public function grandparent()
+	{
+		return $this->parent->parent->category;
+	}
 }
 
 
@@ -106,28 +115,51 @@ function varDumpColumn( $list , $column='category')
 
 
 
-echo '<h1>Island - Eleuthera</h1>';
-$island = Island::whereCategory('Eleuthera')->get()->first();
+echo '<h1>Island</h1>';
+$island = Island::whereCategory('Nassau/New Providence')->get()->first();
 var_dump($island->toArray());
 
 
 echo '<h1>Locations in island</h1>';
-varDumpColumn( $island->children->toArray() );
+var_dump( $island->children->toArray() );
 
 
 echo '<h1>Districts in last Location on island</h1>';
-varDumpColumn(  $island->children->last()->children->toArray() );
+var_dump(  $island->children->last()->children->toArray() );
+
+echo '<h1>Last District in last Location on island</h1>';
+var_dump(  $island->children->last()->children->last()->toArray() );
 
 
 echo '<h1>Parent Location of last district</h1>';
-var_dump(  $island->children->last()->children->last()->parent->category );
+var_dump(  $island->children->last()->children->last()->parent->toArray() );
 
 
 echo '<h1>Parent Island of above Location</h1>';
-var_dump( $island -> children  -> last() -> children  ->last() -> parent   -> parent -> category );
-var_dump( $island -> locations -> last() -> districts ->last() -> location -> island -> category );
+var_dump( $island -> children  -> last() -> children  ->last() -> parent   -> parent -> toArray() );
+var_dump( $island -> locations -> last() -> districts ->last() -> location -> island -> toArray() );
 
 
-echo '<h1>All Districts in Eleuthera</h1>';
-varDumpColumn( $island->grandchildren->toArray() );
+echo '<h1>All Districts in Island - <code>$island->grandchildren</code></h1>';
+var_dump( $island->grandchildren->toArray() );
+
+echo '<h1>Last District in Island</h1>';
+var_dump( $island->grandchildren->last()->toArray() );
+
+echo '<p>The parent_id shown above should be 471, not 410. 410 is the Island of Nassau.<br>
+The join is probably screwing up which column value to return because all column names are
+the same in all 3 tables (views).
+</p>';
+
+echo '<h1>Grandparent Island of last District in Island:</h1>';
+echo "<p>Fails with excessive chaining: ";
+echo( $island->grandchildren->last()->grandparent() );
+// Problem with the above: The grandchild (district) has its 
+// parent's (location) parent_id value (an island id) 
+// instead of its proper parent_id value (a location id).
+// I'm guessing this is due to all of the tables having identical field names.
+// There is no problem with the below:
+echo "<p>Works with minimal chaining: ";
+echo ( District::findOrFail(526)->grandparent() );
+
 ?>
