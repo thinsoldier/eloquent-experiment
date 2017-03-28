@@ -3,7 +3,7 @@ namespace GrapeSoda;
 
 error_reporting( E_ALL );
 
-ini_set('xdebug.var_display_max_children', 512);
+ini_set('xdebug.var_display_max_children', 10);
 
 require 'vendor/autoload.php';
 
@@ -51,14 +51,14 @@ class Island extends Eloquent
 	
 	public function children()
 	{
-		return $this->hasMany( Location::class, 'island_id' );
+		return $this->hasMany( Location::class );
 	}
 	
 	public function locations(){ return $this->children(); }
 	
 	public function grandchildren()
 	{
-		return $this->hasManyThrough( District::class, Location::class, 'island_id', 'location_id');
+		return $this->hasManyThrough( District::class, Location::class );
 	}
 }
 
@@ -71,7 +71,7 @@ class Location extends Eloquent
 	
 	public function children()
 	{
-		return $this->hasMany( District::class, 'location_id' );
+		return $this->hasMany( District::class );
 	}
 	
 	public function districts(){ return $this->children(); }
