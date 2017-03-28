@@ -71,6 +71,11 @@ class Island extends LocationLevelBase
 	}
 	
 	public function locations(){ return $this->children(); }
+	
+	public function grandchildren()
+	{
+		return $this->hasManyThrough( District::class, Location::class, 'parent_id', 'parent_id');
+	}
 }
 
 
@@ -121,7 +126,7 @@ function varDumpColumn( $list , $column='category')
 
 
 
-echo '<h1>Island</h1>';
+echo '<h1>Island - Eleuthera</h1>';
 $island = Island::whereCategory('Eleuthera')->get()->first();
 var_dump($island->toArray());
 
@@ -141,4 +146,6 @@ var_dump( $island -> children  -> last() -> children  ->last() -> parent   -> pa
 var_dump( $island -> locations -> last() -> districts ->last() -> location -> island -> category );
 
 // todo: has-many-through: get all districts in island.
+echo '<h1>All Districts in Eleuthera</h1>';
+var_dump( $island -> grandchildren );
 ?>
