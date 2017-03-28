@@ -60,7 +60,7 @@ CREATE TABLE `locations` (
 --
 DROP TABLE IF EXISTS `districts`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `districts` AS select `categories`.`id` AS `id`,`categories`.`parent_id` AS `parent_id`,`categories`.`section` AS `section`,`categories`.`category` AS `category` from `categories` where (`categories`.`section` = 'district');
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `districts` AS select `categories`.`id` AS `id`,`categories`.`parent_id` AS `location_id`,`categories`.`section` AS `section`,`categories`.`category` AS `category` from `categories` where (`categories`.`section` = 'district');
 
 -- --------------------------------------------------------
 
@@ -69,7 +69,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `islands`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `islands` AS select `categories`.`id` AS `id`,`categories`.`parent_id` AS `parent_id`,`categories`.`section` AS `section`,`categories`.`category` AS `category` from `categories` where (`categories`.`section` = 'island');
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `islands` AS select `categories`.`id` AS `id`,`categories`.`section` AS `section`,`categories`.`category` AS `category` from `categories` where (`categories`.`section` = 'island');
 
 -- --------------------------------------------------------
 
@@ -78,7 +78,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `locations`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `locations` AS select `categories`.`id` AS `id`,`categories`.`parent_id` AS `parent_id`,`categories`.`section` AS `section`,`categories`.`category` AS `category` from `categories` where (`categories`.`section` = 'location');
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `locations` AS select `categories`.`id` AS `id`,`categories`.`parent_id` AS `island_id`,`categories`.`section` AS `section`,`categories`.`category` AS `category` from `categories` where (`categories`.`section` = 'location');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
