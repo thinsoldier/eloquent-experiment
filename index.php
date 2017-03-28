@@ -41,29 +41,9 @@ class Category extends Eloquent
 
 
 
-
-class LocationLevelBase extends Category
+class Island extends Eloquent 
 {
-	protected $mySection;
-	/*
-	I believe newQuery() is called in any instance where you use the query builder for that model, 
-	so this should cause all queries on this model to be limited to records that are islands.
-	https://laravel.io/index.php/forum/02-13-2014-eloquent-model-default-scope
-	*/
-	public function newQuery($excludeDeleted = true)
-	{
-		return parent::newQuery($excludeDeleted)->whereSection( $this->mySection );
-	}
-	
-	public function children(){}
-}
-
-
-
-
-class Island extends LocationLevelBase 
-{
-	protected $mySection = 'island';
+	public $timestamps = false;
 	
 	public function children()
 	{
@@ -81,9 +61,9 @@ class Island extends LocationLevelBase
 
 
 
-class Location extends LocationLevelBase 
+class Location extends Eloquent 
 {
-	protected $mySection = 'location';
+	public $timestamps = false;
 	
 	public function children()
 	{
@@ -103,10 +83,10 @@ class Location extends LocationLevelBase
 
 
 
-class District extends LocationLevelBase 
+class District extends Eloquent 
 {
-	protected $mySection = 'district';
-	
+	public $timestamps = false;
+		
 	public function parent()
 	{
 		return $this->belongsTo( Location::class, 'parent_id' );
@@ -138,14 +118,16 @@ varDumpColumn( $island->children->toArray() );
 echo '<h1>Districts in last Location on island</h1>';
 varDumpColumn(  $island->children->last()->children->toArray() );
 
+
 echo '<h1>Parent Location of last district</h1>';
 var_dump(  $island->children->last()->children->last()->parent->category );
+
 
 echo '<h1>Parent Island of above Location</h1>';
 var_dump( $island -> children  -> last() -> children  ->last() -> parent   -> parent -> category );
 var_dump( $island -> locations -> last() -> districts ->last() -> location -> island -> category );
 
-// todo: has-many-through: get all districts in island.
+
 echo '<h1>All Districts in Eleuthera</h1>';
-var_dump( $island -> grandchildren );
+varDumpColumn( $island->grandchildren->toArray() );
 ?>
