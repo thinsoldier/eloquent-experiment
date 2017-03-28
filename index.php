@@ -86,6 +86,13 @@ class Location extends LocationLevelBase
 	}
 	
 	public function districts(){ return $this->children(); }
+	
+	public function parent()
+	{
+		return $this->belongsTo( Island::class, 'parent_id' );
+	}
+	
+	public function island(){ return $this->parent(); }	
 }
 
 
@@ -94,6 +101,13 @@ class Location extends LocationLevelBase
 class District extends LocationLevelBase 
 {
 	protected $mySection = 'district';
+	
+	public function parent()
+	{
+		return $this->belongsTo( Location::class, 'parent_id' );
+	}
+
+	public function location(){ return $this->parent(); }	
 }
 
 
@@ -118,4 +132,13 @@ varDumpColumn( $island->children->toArray() );
 
 echo '<h1>Districts in last Location on island</h1>';
 varDumpColumn(  $island->children->last()->children->toArray() );
+
+echo '<h1>Parent Location of last district</h1>';
+var_dump(  $island->children->last()->children->last()->parent->category );
+
+echo '<h1>Parent Island of above Location</h1>';
+var_dump( $island -> children  -> last() -> children  ->last() -> parent   -> parent -> category );
+var_dump( $island -> locations -> last() -> districts ->last() -> location -> island -> category );
+
+// todo: has-many-through: get all districts in island.
 ?>
