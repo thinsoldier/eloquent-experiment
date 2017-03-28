@@ -53,7 +53,9 @@ class LocationLevelBase extends Category
 	public function newQuery($excludeDeleted = true)
 	{
 		return parent::newQuery($excludeDeleted)->whereSection( $this->mySection );
-	}	
+	}
+	
+	public function children(){}
 }
 
 
@@ -63,10 +65,12 @@ class Island extends LocationLevelBase
 {
 	protected $mySection = 'island';
 	
-	public function locations()
+	public function children()
 	{
 		return $this->hasMany( Location::class, 'parent_id' );
 	}
+	
+	public function locations(){ return $this->children(); }
 }
 
 
@@ -76,10 +80,12 @@ class Location extends LocationLevelBase
 {
 	protected $mySection = 'location';
 	
-	public function districts()
+	public function children()
 	{
 		return $this->hasMany( District::class, 'parent_id' );
 	}
+	
+	public function districts(){ return $this->children(); }
 }
 
 
@@ -107,10 +113,9 @@ var_dump($island->toArray());
 
 
 echo '<h1>Locations in island</h1>';
-varDumpColumn( $island->locations->toArray() );
+varDumpColumn( $island->children->toArray() );
 
 
 echo '<h1>Districts in last Location on island</h1>';
-//var_dump( array_column() );
-varDumpColumn(  $island->locations->last()->districts->toArray() );
+varDumpColumn(  $island->children->last()->children->toArray() );
 ?>
