@@ -51,14 +51,14 @@ class Island extends Eloquent
 	
 	public function children()
 	{
-		return $this->hasMany( Location::class, 'parent_id' );
+		return $this->hasMany( Location::class, 'island_id' );
 	}
 	
 	public function locations(){ return $this->children(); }
 	
 	public function grandchildren()
 	{
-		return $this->hasManyThrough( District::class, Location::class, 'parent_id', 'parent_id');
+		return $this->hasManyThrough( District::class, Location::class, 'island_id', 'location_id');
 	}
 }
 
@@ -71,14 +71,14 @@ class Location extends Eloquent
 	
 	public function children()
 	{
-		return $this->hasMany( District::class, 'parent_id' );
+		return $this->hasMany( District::class, 'location_id' );
 	}
 	
 	public function districts(){ return $this->children(); }
 	
 	public function parent()
 	{
-		return $this->belongsTo( Island::class, 'parent_id' );
+		return $this->belongsTo( Island::class, 'island_id' );
 	}
 	
 	public function island(){ return $this->parent(); }	
@@ -93,7 +93,7 @@ class District extends Eloquent
 		
 	public function parent()
 	{
-		return $this->belongsTo( Location::class, 'parent_id' );
+		return $this->belongsTo( Location::class, 'location_id' );
 	}
 
 	public function location(){ return $this->parent(); }	
@@ -146,20 +146,20 @@ var_dump( $island->grandchildren->toArray() );
 echo '<h1>Last District in Island</h1>';
 var_dump( $island->grandchildren->last()->toArray() );
 
-echo '<p>The parent_id shown above should be 471, not 410. 410 is the Island of Nassau.<br>
-The join is probably screwing up which column value to return because all column names are
+echo '<p>The <strike>parent_id</strike> location_id shown above should be 471, not 410. 410 is the Island of Nassau.<br>
+The join <strike>is probably</strike> was screwing up which column value to return because all column names <strike>are</strike> were
 the same in all 3 tables (views).
 </p>';
 
 echo '<h1>Grandparent Island of last District in Island:</h1>';
-echo "<p>Fails with excessive chaining: ";
+echo "<p>Now works with excessive chaining: ";
 echo( $island->grandchildren->last()->grandparent() );
 // Problem with the above: The grandchild (district) has its 
 // parent's (location) parent_id value (an island id) 
 // instead of its proper parent_id value (a location id).
 // I'm guessing this is due to all of the tables having identical field names.
 // There is no problem with the below:
-echo "<p>Works with minimal chaining: ";
+echo "<p>Still works with minimal chaining: ";
 echo ( District::findOrFail(526)->grandparent() );
 
 ?>
