@@ -76,12 +76,12 @@ class Location extends Eloquent
 	
 	public function districts(){ return $this->children(); }
 	
-	public function parent()
+	public function island()
 	{
-		return $this->belongsTo( Island::class, 'island_id' );
+		return $this->belongsTo( Island::class );
 	}
 	
-	public function island(){ return $this->parent(); }	
+	public function parent(){ return $this->island(); }	
 }
 
 
@@ -91,12 +91,12 @@ class District extends Eloquent
 {
 	public $timestamps = false;
 		
-	public function parent()
+	public function location()
 	{
-		return $this->belongsTo( Location::class, 'location_id' );
+		return $this->belongsTo( Location::class );
 	}
 
-	public function location(){ return $this->parent(); }	
+	public function parent(){ return $this->location(); }	
 	
 	public function grandparent()
 	{
